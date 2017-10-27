@@ -800,6 +800,127 @@ public class Solution {
         }
         return -1;
     }
+    @Index(34)
+    public int[] searchRange(int[] nums, int target) {
+        int low = 0,high = nums.length - 1;
+        int mid;
+        int id = -1;
+        while (low<=high){
+            mid = (low+high)/2;
+            if(target==nums[mid]) {
+                id = mid;
+                break;
+            }
+            else if(target>nums[mid])
+                low = mid + 1;
+            else
+                high = mid - 1;
+        }
+        if(id==-1)
+            return new int[]{-1,-1};
+        int l1 = low,h1 = id;
+        while (l1<=h1){
+            mid = (l1+h1)/2;
+            if(target>nums[mid])
+                l1 = mid + 1;
+            else
+                h1 = mid - 1;
+        }
+        int l2 = id,h2 = high;
+        while (l2<=h2){
+            mid = (l2+h2)/2;
+            if(target<nums[mid])
+                h2 = mid - 1;
+            else
+                l2 = mid + 1;
+        }
+        return new int[]{h1+1,l2-1};
+    }
+    @Index(35)
+    public int searchInsert(int[] nums, int target) {
+        int l = 0,h = nums.length-1,mid;
+        while (l<=h){
+            mid = (l+h)>>1;
+            if(nums[mid] == target)
+                return mid;
+            else if( nums[mid] < target)
+                l = mid+1;
+            else
+                h = mid-1;
+        }
+        if(h>=0&&nums[h]>target) return h;
+        else return h+1;
+    }
+    @Index(36)
+    public boolean isValidSudoku(char[][] board) {
+        return checkRow(board)&&checkCol(board)&&checkSub(board);
+    }
+
+    private boolean checkRow(char[][] board) {
+        Set<Character> set = new HashSet<>();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char c = board[i][j];
+                if(set.contains(c))
+                    return false;
+                else if(c != '.')
+                    set.add(c);
+            }
+            set.clear();
+        }
+        return true;
+    }
+
+    private boolean checkCol(char[][] board) {
+        Set<Character> set = new HashSet<>();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char c = board[j][i];
+                if(set.contains(c))
+                    return false;
+                else if(c != '.')
+                    set.add(c);
+            }
+            set.clear();
+        }
+        return true;
+    }
+
+    private boolean checkSub(char[][] board) {
+        Set<Character> set = new HashSet<>();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int m = 3*i; m < 3*i+3; m++) {
+                    for (int n = 3*j; n < 3*j+3; n++) {
+                        char c = board[m][n];
+                        if (set.contains(c))
+                            return false;
+                        else if (c != '.')
+                            set.add(c);
+                    }
+                }
+                set.clear();
+            }
+        }
+        return true;
+    }
+
+    @Index(37)
+    public void solveSudoku(char[][] board) {
+        boolean[][] rows = new boolean[9][9];
+        boolean[][] cols = new boolean[9][9];
+        boolean[][] subs = new boolean[9][9];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                int num = board[i][j]-'0'-1;
+                rows[i][num] = true;
+                cols[j][num] = true;
+                subs[i/3*3+j/3][num] = true;
+            }
+        }
+
+    }
+
     @Index(205)
     private ListNode reverseList(ListNode head){
         ListNode node = head,pre = null ,tmp;
@@ -811,6 +932,8 @@ public class Solution {
         }
         return pre;
     }
+
+
     /**
      * @param args
      */

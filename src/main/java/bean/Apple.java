@@ -1,5 +1,7 @@
 package bean;
 
+import org.springframework.beans.factory.DisposableBean;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -7,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by xudabiao on 2017/3/1.
  */
-public class Apple {
+public class Apple implements DisposableBean{
     public synchronized void tasteWhat(){
         try {
             wait();
@@ -58,6 +60,11 @@ public class Apple {
             System.out.println(thread.getClass()+"=>die");
         }
 
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("Yes,indeed");
     }
 }
 class wcb{
