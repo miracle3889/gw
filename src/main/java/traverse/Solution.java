@@ -853,73 +853,60 @@ public class Solution {
     }
     @Index(36)
     public boolean isValidSudoku(char[][] board) {
-        return checkRow(board)&&checkCol(board)&&checkSub(board);
-    }
-
-    private boolean checkRow(char[][] board) {
-        Set<Character> set = new HashSet<>();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                char c = board[i][j];
-                if(set.contains(c))
-                    return false;
-                else if(c != '.')
-                    set.add(c);
-            }
-            set.clear();
-        }
-        return true;
-    }
-
-    private boolean checkCol(char[][] board) {
-        Set<Character> set = new HashSet<>();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                char c = board[j][i];
-                if(set.contains(c))
-                    return false;
-                else if(c != '.')
-                    set.add(c);
-            }
-            set.clear();
-        }
-        return true;
-    }
-
-    private boolean checkSub(char[][] board) {
-        Set<Character> set = new HashSet<>();
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int m = 3*i; m < 3*i+3; m++) {
-                    for (int n = 3*j; n < 3*j+3; n++) {
-                        char c = board[m][n];
-                        if (set.contains(c))
-                            return false;
-                        else if (c != '.')
-                            set.add(c);
-                    }
-                }
-                set.clear();
-            }
-        }
-        return true;
-    }
-
-    @Index(37)
-    public void solveSudoku(char[][] board) {
         boolean[][] rows = new boolean[9][9];
         boolean[][] cols = new boolean[9][9];
         boolean[][] subs = new boolean[9][9];
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                int num = board[i][j]-'0'-1;
-                rows[i][num] = true;
-                cols[j][num] = true;
-                subs[i/3*3+j/3][num] = true;
-            }
-        }
-
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                if(board[i][j]!='.'){
+                    int num = board[i][j] - '0' - 1;
+                    if (rows[i][num]) return false;
+                    else rows[i][num] = true;
+                    if (cols[j][num] == true) return false;
+                    else cols[j][num] = true;
+                    if (subs[i / 3 * 3 + j / 3][num] == true) return false;
+                    else subs[i / 3 * 3 + j / 3][num] = true;
+                }
+        return true;
     }
+    @Index(37)
+    public void solveSudoku(char[][] board) {
+        solve(board);
+    }
+
+    private boolean solve(char[][] board) {
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                if (board[i][j] == '.') {
+                    for (char c = '1'; c <= '9'; c++) {
+                        if (isValid(board, i, j ,c)) {
+                            board[i][j] = c;
+                            if (solve(board))
+                                return true;
+                            else
+                                board[i][j] = '.';
+                        }
+                    }
+                    return false;
+                }
+        return true;
+    }
+
+    private boolean isValid(char[][] board, int i, int j,char c) {
+        int rowI = i/3*3,colI = j/3*3;
+        for (int k = 0; k < 9; k++) {
+            if(board[i][k]==c)
+                return false;
+            if(board[k][j]==c)
+                return false;
+            if(board[rowI+k/3][colI+k%3]==c)
+                return false;
+            if(board[rowI+k%3][colI+k/3]==c)
+                return false;
+        }
+        return true;
+    }
+
 
     @Index(205)
     private ListNode reverseList(ListNode head){
@@ -938,6 +925,16 @@ public class Solution {
      * @param args
      */
     public static void main(String[] args) {
-        System.out.println(new Solution().longestValidParentheses("())"));
+char c[][] = {  {'.','.','.','9','7','4','8','.','.'},
+                {'7','.','.','.','.','.','.','.','.'},
+                {'.','2','.','1','.','9','.','.','.'},
+                {'.','.','7','.','.','.','2','4','.'},
+                {'.','6','4','.','1','.','5','9','.'},
+                {'.','9','8','.','.','.','3','.','.'},
+                {'.','.','.','8','.','3','.','2','.'},
+                {'.','.','.','.','.','.','.','.','6'},
+                {'.','.','.','2','7','5','9','.','.'},
+            };
+        System.out.println(new Solution().solve(c));
     }
 }
