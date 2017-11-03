@@ -907,6 +907,59 @@ public class Solution {
         return true;
     }
 
+    @Index(38)
+    public String countAndSay(int n) {
+        String startTerm = "1";
+        StringBuilder newTerm = new StringBuilder();
+        Character z;
+        int count;
+        while (n>=2){
+            count = 0;
+            z = null;
+            for (char c : startTerm.toCharArray()) {
+                if(z==null){
+                    z = c;
+                    count++;
+                }
+                else{
+                    if(z==c)
+                        count++;
+                    else {
+                        newTerm.append(count).append(z);
+                        z = c;
+                        count = 1;
+                    }
+                }
+            }
+            newTerm.append(count).append(z);
+            startTerm = newTerm.toString();
+            newTerm = new StringBuilder();
+            n--;
+        }
+        return startTerm;
+    }
+
+    @Index(39)
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> res = new ArrayList<>();
+        combinationSum(candidates,0,target,new ArrayList<>(),res);
+        return res;
+    }
+
+    private void combinationSum(int[] candidates, int leftIndex, int target,List<Integer> list,List<List<Integer>> result) {
+        if(target==0) {
+            result.add(list);
+            return;
+        }
+        if(candidates[leftIndex]>target)
+            return;
+        for (int i = leftIndex; i < candidates.length; i++) {
+            List<Integer> copy = new ArrayList<>(list);
+            copy.add(candidates[i]);
+            combinationSum(candidates,i,target-candidates[i],copy,result);
+        }
+    }
 
     @Index(205)
     private ListNode reverseList(ListNode head){
@@ -925,16 +978,6 @@ public class Solution {
      * @param args
      */
     public static void main(String[] args) {
-char c[][] = {  {'.','.','.','9','7','4','8','.','.'},
-                {'7','.','.','.','.','.','.','.','.'},
-                {'.','2','.','1','.','9','.','.','.'},
-                {'.','.','7','.','.','.','2','4','.'},
-                {'.','6','4','.','1','.','5','9','.'},
-                {'.','9','8','.','.','.','3','.','.'},
-                {'.','.','.','8','.','3','.','2','.'},
-                {'.','.','.','.','.','.','.','.','6'},
-                {'.','.','.','2','7','5','9','.','.'},
-            };
-        System.out.println(new Solution().solve(c));
+        System.out.println(new Solution().combinationSum(new int[]{2,3,6,7},7));
     }
 }
