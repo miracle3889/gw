@@ -1165,11 +1165,22 @@ public class Solution {
 
     @Index(48)
     public void rotate(int[][] matrix) {
-        for (int i = 0; i < matrix.length/2; i++) {
-            int[] ints = matrix[i];
-
+        int row = matrix.length,col = matrix[0].length;
+        int tmp;
+        for (int i = 0; i < row/2; i++) {
+            for (int j = 0; j < col; j++) {
+                tmp = matrix[i][j];
+                matrix[i][j] = matrix[row-1-i][j];
+                matrix[row-1-i][j] = tmp;
+            }
         }
-
+        for (int i = 0; i < row; i++) {
+            for (int j = i+1; j < col; j++) {
+                tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
+            }
+        }
     }
 
     @Index(205)
