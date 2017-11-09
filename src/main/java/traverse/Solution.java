@@ -961,6 +961,217 @@ public class Solution {
         }
     }
 
+    @Index(40)
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> res = new ArrayList<>();
+        combinationSum2(candidates,0,target,new ArrayList<>(),res);
+        return res;
+    }
+
+    private void combinationSum2(int[] candidates, int leftIndex, int target,List<Integer> list,List<List<Integer>> result) {
+        if(target==0) {
+            result.add(list);
+            return;
+        }
+        if(leftIndex>=candidates.length||candidates[leftIndex]>target)
+            return;
+        Set<Integer> chosenItems = new HashSet<>();
+        for (int i = leftIndex; i < candidates.length; i++) {
+            if(chosenItems.contains(candidates[i]))
+                continue;
+            else
+                chosenItems.add(candidates[i]);
+            List<Integer> copy = new ArrayList<>(list);
+            copy.add(candidates[i]);
+            combinationSum2(candidates,i+1,target-candidates[i],copy,result);
+        }
+    }
+
+    @Index(41)
+    public int firstMissingPositive(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i]>0&&nums[i]<=nums.length&&nums[nums[i]-1]!=nums[i]){
+                int temp = nums[nums[i]-1];
+                nums[nums[i]-1] = nums[i];
+                nums[i] = temp;
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if(nums[i]!=i+1)
+                return i+1;
+        }
+        return nums.length+1;
+    }
+
+    @Index(42)
+    public int trap(int[] height) {
+        if(height==null||height.length==0)
+            return 0;
+        int length = height.length;
+        int[] l = new int[length];
+        int[] r = new int[length];
+        l[0] = height[0];
+        r[length-1] = height[length-1];
+        for (int i = 1; i < length; i++)
+            l[i] = Math.max(height[i],l[i-1]);
+        for (int i = length-2; i >= 0; i--)
+            r[i] = Math.max(height[i],r[i+1]);
+        int ans = 0;
+        for (int i = 0; i < r.length; i++) {
+            ans+=Math.min(l[i],r[i])-height[i];
+        }
+        return ans;
+    }
+
+    @Index(43)
+    public String multiply(String num1, String num2) {
+        int l1 = num1.length(),l2= num2.length();
+        StringBuilder rs = new StringBuilder();
+        int[] pos = new int[l1+l2];
+        for (int i = l1-1; i >=0; i--) {
+            for (int j = l2-1; j >=0 ; j--) {
+                int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+                int p1 = i + j, p2 = i + j + 1;
+                int sum = mul + pos[p2];
+                pos[p1] += sum / 10;
+                pos[p2] = (sum) % 10;
+            }
+        }
+        for (int po : pos) {
+            if(!(rs.length()==0&&po==0))
+                rs.append(po);
+        }
+        return rs.length()==0?"0":rs.toString();
+    }
+
+    /**
+     * '?' Matches any single character.
+     '*' Matches any sequence of characters (including the empty sequence).
+
+     The matching should cover the entire input string (not partial).
+
+     The function prototype should be:
+     bool isMatch(const char *s, const char *p)
+
+     Some examples:
+     isMatch("aa","a") ¡ú false
+     isMatch("aa","aa") ¡ú true
+     isMatch("aaa","aa") ¡ú false
+     isMatch("aa", "*") ¡ú true
+     isMatch("aa", "a*") ¡ú true
+     isMatch("ab", "?*") ¡ú true
+     isMatch("aab", "c*a*b") ¡ú false
+     * @param s
+     * @param p
+     * @return
+     */
+    @Index(44)
+    public boolean isMatch2(String ss, String pp) {
+        int s = 0,p = 0,star = -1,backS = 0;
+        int length = ss.length();
+        while (s<length){
+            if(p < pp.length()&&(pp.charAt(p)=='?'||ss.charAt(s)==pp.charAt(p))){
+                s++;
+                p++;
+            }
+            else if(p < pp.length()&&pp.charAt(p)=='*'){
+                star = p;
+                backS = s;
+                p++;
+            }
+            else if(star!=-1){
+                s = ++backS;
+                p = star + 1;
+            }
+            else
+                return false;
+        }
+        while (p<pp.length()&&pp.charAt(p)=='*')
+            p++;
+        return p == pp.length();
+    }
+
+    @Index(45)
+    public int jump(int[] nums) {
+        if(nums==null||nums.length<=1)
+            return 0;
+        int turn = 0,i = 0,curMax = 0,nextMax = 0;
+        while (i<=curMax){
+            turn++;
+            for (; i <= curMax; i++) {
+                nextMax = Math.max(nextMax,i+nums[i]);
+                if(nextMax>=nums.length-1)
+                    return turn;
+            }
+            curMax = nextMax;
+        }
+        return 0;
+    }
+
+    @Index(46)
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<List<Integer>> bak = new ArrayList<>();
+        for (int num : nums) {
+            if(result.size()==0){
+                result.add(Arrays.asList(num));
+            }
+            else{
+                for (List<Integer> list : result) {
+                    for (int i = 0; i <= list.size(); i++) {
+                        List<Integer> newList = new ArrayList<>(list);
+                        newList.add(i,num);
+                        bak.add(newList);
+                    }
+                }
+                result.clear();
+                result.addAll(bak);
+                bak.clear();
+            }
+        }
+        return result;
+    }
+
+    @Index(47)
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        backTrack(result,new ArrayList<>(),nums);
+        return result;
+    }
+
+    private void backTrack(List<List<Integer>> result, List<Integer> list, int[] nums) {
+        if(list.size()==nums.length) {
+            List<Integer> list1 = new ArrayList<>();
+            for (Integer integer : list) {
+                list1.add(nums[integer]);
+            }
+            result.add(list1);
+            return;
+        }
+        else{
+            for (int i = 0; i < nums.length; i++) {
+                if(list.contains(i))
+                    continue;
+                if(i-1>=0&&!list.contains(i-1)&&nums[i-1]==nums[i])
+                    continue;
+                list.add(i);
+                backTrack(result,list,nums);
+                list.remove(list.size()-1);
+            }
+        }
+    }
+
+    @Index(48)
+    public void rotate(int[][] matrix) {
+        for (int i = 0; i < matrix.length/2; i++) {
+            int[] ints = matrix[i];
+
+        }
+
+    }
+
     @Index(205)
     private ListNode reverseList(ListNode head){
         ListNode node = head,pre = null ,tmp;
@@ -978,6 +1189,7 @@ public class Solution {
      * @param args
      */
     public static void main(String[] args) {
-        System.out.println(new Solution().combinationSum(new int[]{2,3,6,7},7));
+        Solution s =  new Solution();
+        System.out.println(s.permuteUnique(new int[]{1,1,2,2,3,3}));
     }
 }
