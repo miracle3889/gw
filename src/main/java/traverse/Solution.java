@@ -1183,6 +1183,241 @@ public class Solution {
         }
     }
 
+    @Index(49)
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String,List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char c[] = str.toCharArray();
+            Arrays.sort(c);
+            String g = new String(c);
+            if(!map.containsKey(g)){
+                map.put(g,new ArrayList<>());
+            }
+            map.get(g).add(str);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    @Index(50)
+    public double myPow(double x, int n) {
+        if(n==1)
+            return x;
+        else if(n==-1)
+            return 1/x;
+        else if(n ==0 )
+            return 1;
+        double g = myPow(x,n/2);
+        return g*g*(n%2==0?1:n%2==1?x:1/x);
+    }
+
+    @Index(51)
+    public List<List<String>> solveNQueens(int n) {
+        boolean[][] ck = new boolean[n][n];
+        List<List<String>> result = new ArrayList<>();
+        tracking(result,ck,0);
+        return result;
+    }
+
+    private void tracking(List<List<String>> result, boolean[][] ck, int i) {
+        if(i==ck.length){
+            List<String> tmp = new ArrayList<>();
+            StringBuilder sb = null;
+            for (int j = 0; j < ck.length; j++) {
+                sb = new StringBuilder();
+                for (int k = 0; k < ck.length; k++) {
+                    sb.append(ck[j][k]?'Q':'.');
+                }
+                tmp.add(sb.toString());
+            }
+            result.add(tmp);
+        }
+        for (int j = 0; j < ck.length; j++) {
+            if(canBeQueen(ck,i,j)) {
+                ck[i][j] = true;
+                tracking(result,ck,i+1);
+                ck[i][j] = false;
+            }
+        }
+    }
+
+    private boolean canBeQueen(boolean[][] ck, int i, int j) {
+        int len = ck.length;
+        for (int k = 0; k < ck.length; k++)
+            if(ck[k][j])
+                return false;
+        int steps =Math.max(Math.max(i,len-i),Math.max(j,len-j));
+        for (int step = 1; step <= steps; step++) {
+            if (i + step < len && j + step < len && ck[i + step][j + step])
+                return false;
+            if (i + step < len && j - step >= 0 && ck[i + step][j - step])
+                return false;
+            if (i - step >= 0 && j + step < len && ck[i - step][j + step])
+                return false;
+            if (i - step >= 0 && j - step >= 0 && ck[i - step][j - step])
+                return false;
+        }
+        return true;
+    }
+
+
+    int count = 0;
+    public int totalNQueens(int n) {
+        boolean[] cols = new boolean[n];     // columns   |
+        boolean[] d1 = new boolean[2 * n];   // diagonals \
+        boolean[] d2 = new boolean[2 * n];   // diagonals /
+        backtracking(0, cols, d1, d2, n);
+        return count;
+    }
+    public void backtracking(int row, boolean[] cols, boolean[] d1, boolean []d2, int n) {
+        if(row == n) count++;
+
+        for(int col = 0; col < n; col++) {
+            int id1 = col - row + n;
+            int id2 = col + row;
+            if(cols[col] || d1[id1] || d2[id2]) continue;
+
+            cols[col] = true; d1[id1] = true; d2[id2] = true;
+            backtracking(row + 1, cols, d1, d2, n);
+            cols[col] = false; d1[id1] = false; d2[id2] = false;
+        }
+    }
+
+    @Index(53)
+    public int maxSubArray(int[] nums) {
+        int max = Integer.MIN_VALUE,sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            max = Math.max(max,sum);
+            if(sum<0) sum=0;
+        }
+        return max;
+    }
+
+    @Index(54)
+    public List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix.length==0||matrix[0].length==0)
+            return new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
+        int rows = matrix.length,cols = matrix[0].length;
+        int r = 0,l = 0;
+        int upr = 0,downr = rows-1;
+        int ll = 0,rl = cols-1;
+        while (upr<=downr&&ll<=rl){
+            if(r==upr){
+                if(l==ll) {
+                    for (; l <= rl; l++)
+                        result.add(matrix[r][l]);
+                    upr++;
+                    r++;
+                    l--;
+                }
+                else {
+                    for (; r <= downr; r++)
+                        result.add(matrix[r][l]);
+                    rl--;
+                    l--;
+                    r--;
+                }
+            }
+            if(r==downr){
+                if(l==rl) {
+                    for (; l >= ll; l--)
+                        result.add(matrix[r][l]);
+                    downr--;
+                    r--;
+                    l++;
+                }
+                else{
+                    for (;r>=upr; r--)
+                        result.add(matrix[r][l]);
+                    ll++;
+                    l++;
+                    r++;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Index(55)
+    public boolean canJump(int[] nums) {
+        int cur = 0,nx = nums[0],len = nums.length,tmp;
+        while (nx<len-1){
+            tmp = nx;
+            for (int i = cur + 1; i <= tmp; i++)
+                nx = Math.max(nx,nums[i]+i);
+            if(nx==tmp)
+                return false;
+            cur = tmp;
+        }
+        return true;
+    }
+
+    class Interval {
+        int start;
+        int end;
+        Interval() { start = 0; end = 0; }
+        Interval(int s, int e) { start = s; end = e; }
+    }
+    @Index(56)
+    public List<Interval> merge(List<Interval> intervals) {
+        Interval[] gg = intervals.toArray(new Interval[intervals.size()]);
+        Arrays.sort(gg, new Comparator<Interval>() {
+            @Override
+            public int compare(Interval o1, Interval o2) {
+                return o1.start-o2.start;
+            }
+        });
+        LinkedList<Interval> result = new LinkedList<>();
+        for (int i = 0; i < gg.length; i++) {
+            if (result.isEmpty())
+                result.add(gg[i]);
+            else{
+                Interval ii = result.removeLast();
+                if(ii.end<gg[i].start){
+                    result.add(ii);
+                    result.add(gg[i]);
+                }
+                else {
+                    result.add(new Interval(ii.start, Math.max(gg[i].end,ii.end)));
+                }
+            }
+        }
+        return result;
+    }
+
+    @Index(57)
+    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+        List<Interval> res = new ArrayList<>(intervals.size());
+        int ct = 0;
+        for (;ct<intervals.size()&&intervals.get(ct).end<newInterval.start;ct++)
+            res.add(intervals.get(ct));
+        for (;ct<intervals.size()&&intervals.get(ct).start<=newInterval.end;ct++) {
+            newInterval.start = Math.min(newInterval.start,intervals.get(ct).start);
+            newInterval.end = Math.max(newInterval.end,intervals.get(ct).end);
+        }
+        res.add(newInterval);
+        for (;ct<intervals.size();ct++)
+            res.add(intervals.get(ct));
+        return res;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Index(205)
     private ListNode reverseList(ListNode head){
         ListNode node = head,pre = null ,tmp;
@@ -1201,6 +1436,6 @@ public class Solution {
      */
     public static void main(String[] args) {
         Solution s =  new Solution();
-        System.out.println(s.permuteUnique(new int[]{1,1,2,2,3,3}));
+        System.out.println(s.canJump(new int[]{2,1,0,3}));
     }
 }
