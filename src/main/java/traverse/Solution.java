@@ -1405,7 +1405,24 @@ public class Solution {
 
 
 
-
+    @Index(60)
+    public String getPermutation(int n, int k) {
+        List<Integer> opts = new ArrayList<>();
+        int sw = 1;
+        for (int i = 1; i <= n; i++) {
+            opts.add(i);
+            sw*=i;
+        }
+        StringBuilder rs = new StringBuilder();
+        int bs;
+        for (int i = n; i > 0 ; i--) {
+            sw/=i;
+            bs = k%sw==0?k/sw-1:k/sw;
+            rs.append(opts.remove(bs));
+            k -= bs*sw;
+        }
+        return rs.toString();
+    }
 
 
 
@@ -1436,6 +1453,8 @@ public class Solution {
      */
     public static void main(String[] args) {
         Solution s =  new Solution();
-        System.out.println(s.canJump(new int[]{2,1,0,3}));
+        for (int i = 1; i <= 24; i++) {
+            System.out.println(s.getPermutation(4,i));
+        }
     }
 }
