@@ -1402,6 +1402,63 @@ public class Solution {
         return res;
     }
 
+    @Index(58)
+    public int lengthOfLastWord(String s) {
+        int len = 0;
+        int index = s.length()-1;
+        while (index>=0){
+            if(s.charAt(index--)==' ') {
+                if(len!=0)
+                    return len;
+                else if(len==0)
+                    continue;
+            }
+            else
+                len++;
+        }
+        return len;
+    }
+
+    @Index(59)
+    public int[][] generateMatrix(int n) {
+        int[][] rs = new int[n][n];
+        int i = -1,j = -1,ct = 0;
+        while (ct!=n*n) {
+            for (i++,j++; j < n && rs[i][j] == 0; j++) {
+                rs[i][j] = ++ct;
+            }
+            for (j--,i++  ; i < n && rs[i][j] == 0; i++) {
+                rs[i][j] = ++ct;
+            }
+            for (i--,j--; j >= 0 && rs[i][j] == 0; j--) {
+                rs[i][j] = ++ct;
+            }
+            for (j++,i--; i >= 0 && rs[i][j] == 0; i--) {
+                rs[i][j] = ++ct;
+            }
+        }
+        return rs;
+    }
+
+    @Index(60)
+    public String getPermutation(int n, int k) {
+        int[] poly = new int[n+1];
+        poly[0] = 1;
+        for (int i = 1; i < poly.length; i++)
+            poly[i] =  poly[i-1]*i;
+        List<>
+        if(k>poly[n])
+            return null;
+        StringBuilder sb = new StringBuilder();
+        int i = n-1;
+        while (i>0){
+            int tmp = k/poly[i];
+            sb.append(tmp*poly[i]==k?(n-i):(n-i+1));
+            k = k - tmp*poly[i];
+            i--;
+        }
+        return
+    }
 
 
 
@@ -1436,6 +1493,6 @@ public class Solution {
      */
     public static void main(String[] args) {
         Solution s =  new Solution();
-        System.out.println(s.canJump(new int[]{2,1,0,3}));
+        System.out.println(s.generateMatrix(1));
     }
 }
