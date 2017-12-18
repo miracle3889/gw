@@ -1442,27 +1442,22 @@ public class Solution {
 
     @Index(60)
     public String getPermutation(int n, int k) {
-        int[] poly = new int[n+1];
-        poly[0] = 1;
-        for (int i = 1; i < poly.length; i++)
-            poly[i] =  poly[i-1]*i;
-        List<>
-        if(k>poly[n])
-            return null;
-        StringBuilder sb = new StringBuilder();
-        int i = n-1;
-        while (i>0){
-            int tmp = k/poly[i];
-            sb.append(tmp*poly[i]==k?(n-i):(n-i+1));
-            k = k - tmp*poly[i];
-            i--;
+        List<Integer> opts = new ArrayList<>();
+        int sw = 1;
+        for (int i = 1; i <= n; i++) {
+            opts.add(i);
+            sw*=i;
         }
-        return
+        StringBuilder rs = new StringBuilder();
+        int bs;
+        for (int i = n; i > 0 ; i--) {
+            sw/=i;
+            bs = k%sw==0?k/sw-1:k/sw;
+            rs.append(opts.remove(bs));
+            k -= bs*sw;
+        }
+        return rs.toString();
     }
-
-
-
-
 
 
 
@@ -1493,6 +1488,9 @@ public class Solution {
      */
     public static void main(String[] args) {
         Solution s =  new Solution();
+        for (int i = 1; i <= 24; i++) {
+            System.out.println(s.getPermutation(4,i));
+        }
         System.out.println(s.generateMatrix(1));
     }
 }
