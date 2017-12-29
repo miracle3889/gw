@@ -1385,7 +1385,6 @@ public class Solution {
         }
         return result;
     }
-
     @Index(57)
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
         List<Interval> res = new ArrayList<>(intervals.size());
@@ -1439,7 +1438,6 @@ public class Solution {
         }
         return rs;
     }
-
     @Index(60)
     public String getPermutation(int n, int k) {
         List<Integer> opts = new ArrayList<>();
@@ -1458,6 +1456,76 @@ public class Solution {
         }
         return rs.toString();
     }
+    @Index(61)
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head==null)
+            return head;
+        ListNode tmp = head,ls = null;
+        int len = 0;
+        while (tmp!=null){
+            len++;
+            if(tmp.next==null){
+                ls = tmp;
+            }
+            tmp = tmp.next;
+        }
+        k = k%len;
+        if(k==0)return head;
+        k = len - k;
+        int ct = 1;
+        ListNode cur = head;
+        while (ct<k){
+            cur = cur.next;
+            ct++;
+        }
+        ls.next = head;
+        head = cur.next;
+        cur.next = null;
+        return head;
+    }
+    @Index(62)
+    public int minPathSum(int[][] grid) {
+        /**
+         * [[1,3,1],
+         [1,5,1],
+         [4,2,1]]
+         Given the above grid map, return 7.
+         Because the path 1¡ú3¡ú1¡ú1¡ú1 minimizes the sum.
+         */
+        int row = grid.length,col = grid[0].length;
+        if(row==0||col==0)return 0;
+        int[][] cst = new int[row][col];
+        cst[0][0] = grid[0][0];
+        for (int i = 1; i < col; i++) cst[0][i] = cst[0][i-1]+grid[0][i];
+        for (int i = 1; i < row; i++) cst[i][0] = cst[i-1][0]+grid[i][0];
+        for (int i = 1; i < row; i++)
+            for (int j = 1; j < col; j++)
+                cst[i][j] = Math.min(cst[i-1][j],cst[i][j-1])+grid[i][j];
+        return cst[row-1][col-1];
+    }
+    @Index(67)
+    public String addBinary(String a, String b) {
+        StringBuilder sb = new StringBuilder();
+        String longer = a.length()>b.length()?a:b;
+        String shorter = a.length()<=b.length()?a:b;
+        char[] l = longer.toCharArray();
+        char[] s = shorter.toCharArray();
+        int rm = 0;
+        int idx;
+        for (idx = 1; idx <= s.length; idx++) {
+            int vva =rm+ l[l.length-idx]-'0' + s[s.length-idx]-'0';
+            sb.append(vva%2);
+            rm = vva >= 2 ? 1:0 ;
+        }
+        for (; idx<=l.length; idx++) {
+            sb.append((rm + l[l.length-idx] - '0')%2);
+            rm = rm + l[l.length-idx] - '0' >= 2 ? 1:0 ;
+        }
+        if(rm==1)
+            sb.append(rm);
+        return sb.reverse().toString();
+    }
+
 
 
 
@@ -1491,6 +1559,7 @@ public class Solution {
         for (int i = 1; i <= 24; i++) {
             System.out.println(s.getPermutation(4,i));
         }
-        System.out.println(s.generateMatrix(1));
+        System.out.println(s.addBinary("110010",
+                "10111"));
     }
 }
