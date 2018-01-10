@@ -1555,11 +1555,12 @@ public class Solution {
      * @param args
      */
     public static void main(String[] args) {
-        Solution s =  new Solution();
-        for (int i = 1; i <= 24; i++) {
-            System.out.println(s.getPermutation(4,i));
-        }
-        System.out.println(s.addBinary("110010",
-                "10111"));
+//        Solution s =  new Solution();
+//        for (int i = 1; i <= 24; i++) {
+//            System.out.println(s.getPermutation(4,i));
+//        }
+//        System.out.println(s.addBinary("110010",
+//                "10111"));
+        System.out.println(Integer.toHexString(1<<31>>31));
     }
 }
