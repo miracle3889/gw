@@ -1,5 +1,6 @@
 package traverse;
 import java.util.*;
+
 public class Solution {
     @Index(1)
     public int[] twoSum(int[] nums, int target) {
@@ -1385,7 +1386,6 @@ public class Solution {
         }
         return result;
     }
-
     @Index(57)
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
         List<Interval> res = new ArrayList<>(intervals.size());
@@ -1402,9 +1402,43 @@ public class Solution {
         return res;
     }
 
+    @Index(58)
+    public int lengthOfLastWord(String s) {
+        int len = 0;
+        int index = s.length()-1;
+        while (index>=0){
+            if(s.charAt(index--)==' ') {
+                if(len!=0)
+                    return len;
+                else if(len==0)
+                    continue;
+            }
+            else
+                len++;
+        }
+        return len;
+    }
 
-
-
+    @Index(59)
+    public int[][] generateMatrix(int n) {
+        int[][] rs = new int[n][n];
+        int i = -1,j = -1,ct = 0;
+        while (ct!=n*n) {
+            for (i++,j++; j < n && rs[i][j] == 0; j++) {
+                rs[i][j] = ++ct;
+            }
+            for (j--,i++  ; i < n && rs[i][j] == 0; i++) {
+                rs[i][j] = ++ct;
+            }
+            for (i--,j--; j >= 0 && rs[i][j] == 0; j--) {
+                rs[i][j] = ++ct;
+            }
+            for (j++,i--; i >= 0 && rs[i][j] == 0; i--) {
+                rs[i][j] = ++ct;
+            }
+        }
+        return rs;
+    }
     @Index(60)
     public String getPermutation(int n, int k) {
         List<Integer> opts = new ArrayList<>();
@@ -1423,6 +1457,226 @@ public class Solution {
         }
         return rs.toString();
     }
+    @Index(61)
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head==null)
+            return head;
+        ListNode tmp = head,ls = null;
+        int len = 0;
+        while (tmp!=null){
+            len++;
+            if(tmp.next==null){
+                ls = tmp;
+            }
+            tmp = tmp.next;
+        }
+        k = k%len;
+        if(k==0)return head;
+        k = len - k;
+        int ct = 1;
+        ListNode cur = head;
+        while (ct<k){
+            cur = cur.next;
+            ct++;
+        }
+        ls.next = head;
+        head = cur.next;
+        cur.next = null;
+        return head;
+    }
+    @Index(62)
+    public int minPathSum(int[][] grid) {
+        /**
+         * [[1,3,1],
+         [1,5,1],
+         [4,2,1]]
+         Given the above grid map, return 7.
+         Because the path 1¡ú3¡ú1¡ú1¡ú1 minimizes the sum.
+         */
+        int row = grid.length,col = grid[0].length;
+        if(row==0||col==0)return 0;
+        int[][] cst = new int[row][col];
+        cst[0][0] = grid[0][0];
+        for (int i = 1; i < col; i++) cst[0][i] = cst[0][i-1]+grid[0][i];
+        for (int i = 1; i < row; i++) cst[i][0] = cst[i-1][0]+grid[i][0];
+        for (int i = 1; i < row; i++)
+            for (int j = 1; j < col; j++)
+                cst[i][j] = Math.min(cst[i-1][j],cst[i][j-1])+grid[i][j];
+        return cst[row-1][col-1];
+    }
+    @Index(67)
+    public String addBinary(String a, String b) {
+        StringBuilder sb = new StringBuilder();
+        String longer = a.length()>b.length()?a:b;
+        String shorter = a.length()<=b.length()?a:b;
+        char[] l = longer.toCharArray();
+        char[] s = shorter.toCharArray();
+        int rm = 0;
+        int idx;
+        for (idx = 1; idx <= s.length; idx++) {
+            int vva =rm+ l[l.length-idx]-'0' + s[s.length-idx]-'0';
+            sb.append(vva%2);
+            rm = vva >= 2 ? 1:0 ;
+        }
+        for (; idx<=l.length; idx++) {
+            sb.append((rm + l[l.length-idx] - '0')%2);
+            rm = rm + l[l.length-idx] - '0' >= 2 ? 1:0 ;
+        }
+        if(rm==1)
+            sb.append(rm);
+        return sb.reverse().toString();
+    }
+
+
+    @Index(70)
+    public int climbStairs(int n) {
+        int i = 0,j = 1;
+        while (n>1){
+            j = j + i;
+            i = j - i;
+            n--;
+        }
+        return i+j;
+    }
+
+    @Index(71)
+    public String simplifyPath(String path) {
+        String[] ele = path.split("/");
+        List<String> s = new LinkedList<>();
+        for (String s1 : ele) {
+            if(s1.isEmpty()||s1.equals(".")||(s1.equals("..")&&s.size()==0))
+                continue;
+            else if(s1.equals(".."))
+                s.remove(s.size()-1);
+            else
+                s.add(s1);
+        }
+        StringBuilder rs = new StringBuilder();
+        for (String s1 : s)
+            rs.append("/").append(s1);
+        if(rs.length()==0)
+            return "/";
+        return rs.toString();
+    }
+
+    /**
+     *
+     * Given two words word1 and word2,
+     * find the minimum number of steps required to convert word1 to word2.
+     * (each operation is counted as 1 step.)
+     You have the following 3 operations permitted on a word:
+     a) Insert a character
+     b) Delete a character
+     c) Replace a character
+
+     * @param word1
+     * @param word2
+     * @return
+     */
+    @Index(72)
+    public int minDistance(String word1, String word2) {
+        int m = word1.length(),n = word2.length();
+        int[] cc = new int[m+1];
+        for (int i = 0; i <= m; i++) {
+            cc[i] = i;
+        }
+        int pre,tmp;
+        for (int i = 1; i <= n; i++) {
+            pre = cc[0];
+            cc[0] = i;
+            for (int j = 1; j <= m; j++) {
+                tmp = cc[j];
+                if(word1.charAt(j-1)==word2.charAt(i-1)){
+                    cc[j] = pre;
+                }
+                else{
+                    cc[j] =Math.min(cc[j]+1,Math.min(cc[j-1]+1,pre+1));
+                }
+                pre = tmp;
+            }
+        }
+        return cc[m];
+    }
+
+    @Index(73)
+    public void setZeroes(int[][] matrix) {
+        Set<Integer> rows = new HashSet<>();
+        Set<Integer> cols = new HashSet<>();
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if(matrix[i][j]==0){
+                    rows.add(i);
+                    cols.add(j);
+                }
+            }
+        }
+        for (Integer row : rows) {
+            for (int i = 0; i < matrix[0].length; i++) {
+                matrix[row][i]=0;
+            }
+        }
+        for (Integer col : cols) {
+            for (int i = 0; i < matrix.length; i++) {
+                matrix[i][col]=0;
+            }
+        }
+    }
+
+    @Index(74)
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if(matrix.length==0||matrix[0].length==0)
+            return false;
+        int rows = matrix.length,cols = matrix[0].length;
+        int rl = 0,rr = rows-1,cl = 0,cr = cols-1;
+        int rd,cd;
+        while (rl<=rr){
+            rd = (rl+rr)/2;
+            if(target<matrix[rd][0]){
+                rr = rd-1;
+            }
+            else if(target>matrix[rd][cols-1]){
+                rl = rd+1;
+            }
+            else{
+                while (cl<=cr){
+                    cd = (cl+cr)/2;
+                    if(target<matrix[rd][cd]){
+                        cr = cd - 1;
+                    }
+                    else if(target>matrix[rd][cd]){
+                        cl = cd + 1;
+                    }
+                    else
+                        return true;
+                }
+                break;
+            }
+        }
+        return false;
+    }
+
+    @Index(75)
+    public void sortColors(int[] nums) {
+        int l = 0 , r = nums.length-1,tmp,idx = 0;
+        while (idx<=r&&l<nums.length) {
+            tmp = nums[idx];
+            if (tmp == 2) {
+                nums[idx] = nums[r];
+                nums[r--] = tmp;
+            }
+            else if(tmp == 0){
+                nums[idx] = nums[l];
+                nums[l++] = tmp;
+            }
+            else
+                idx++;
+        }
+        for (int i = l; i <= r && i<nums.length; i++) {
+            nums[i] = 1;
+        }
+    }
+
+
 
 
 
@@ -1479,8 +1733,7 @@ public class Solution {
      */
     public static void main(String[] args) {
         Solution s =  new Solution();
-        for (int i = 1; i <= 24; i++) {
-            System.out.println(s.getPermutation(4,i));
-        }
+       s.sortColors(new int[]{0});
+
     }
 }
