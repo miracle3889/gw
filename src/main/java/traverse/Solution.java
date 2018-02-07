@@ -1504,6 +1504,25 @@ public class Solution {
                 cst[i][j] = Math.min(cst[i-1][j],cst[i][j-1])+grid[i][j];
         return cst[row-1][col-1];
     }
+
+    @Index(66)
+    public int[] plusOne(int[] digits) {
+        boolean ups = false;
+        for (int i = digits.length-1; i >= 0; i--) {
+            if(digits[i]+1<10) {
+                digits[i]++;
+                return digits;
+            }
+            else{
+                digits[i] = 0;
+            }
+        }
+        int[] nx = new int[digits.length+1];
+        nx[0] = 1;
+        System.arraycopy(digits,0,nx,1,digits.length);
+        return nx;
+    }
+
     @Index(67)
     public String addBinary(String a, String b) {
         StringBuilder sb = new StringBuilder();
@@ -1658,22 +1677,28 @@ public class Solution {
     @Index(75)
     public void sortColors(int[] nums) {
         int l = 0 , r = nums.length-1,tmp,idx = 0;
-        while (idx<=r&&l<nums.length) {
+        while (idx<=r) {
             tmp = nums[idx];
             if (tmp == 2) {
+                while (r>=0&&nums[r]==2){
+                    r--;
+                }
+                if(r<=idx)
+                    break;
                 nums[idx] = nums[r];
-                nums[r--] = tmp;
+                nums[r] = tmp;
             }
             else if(tmp == 0){
-                nums[idx] = nums[l];
-                nums[l++] = tmp;
+                if(idx != l){
+                    nums[idx] = nums[l];
+                    nums[l] = tmp;
+                }
+                l++;
+                idx++;
             }
             else
                 idx++;
         }
-        for (int i = l; i <= r && i<nums.length; i++) {
-            nums[i] = 1;
-        }
     }
 
 
@@ -1685,34 +1710,7 @@ public class Solution {
 
 
 
-    @Index(66)
-    public int[] plusOne(int[] digits) {
-        boolean ups = false;
-        for (int i = digits.length-1; i >= 0; i--) {
-            if(digits[i]+1<10) {
-                digits[i]++;
-                return digits;
-            }
-            else{
-                digits[i] = 0;
-            }
-        }
-        int[] nx = new int[digits.length+1];
-        nx[0] = 1;
-        System.arraycopy(digits,0,nx,1,digits.length);
-        return nx;
-    }
-    @Index(67)
-    public String addBinary(String a, String b) {
-        char[] ac = a.toCharArray();
-        char[] bc = b.toCharArray();
-        StringBuilder sb = new StringBuilder();
-        int remain = 0;
-        for (int i = 1; i <= Math.min(a.length(),b.length()); i++) {
-            char c1 = ac[a.length()-i];
-            char c2 = bc[b.length()-i];
-        }
-    }
+
 
 
     @Index(205)
