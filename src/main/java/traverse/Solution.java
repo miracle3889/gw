@@ -1,5 +1,6 @@
 package traverse;
 import java.util.*;
+
 public class Solution {
     @Index(1)
     public int[] twoSum(int[] nums, int target) {
@@ -1527,6 +1528,156 @@ public class Solution {
     }
 
 
+    @Index(70)
+    public int climbStairs(int n) {
+        int i = 0,j = 1;
+        while (n>1){
+            j = j + i;
+            i = j - i;
+            n--;
+        }
+        return i+j;
+    }
+
+    @Index(71)
+    public String simplifyPath(String path) {
+        String[] ele = path.split("/");
+        List<String> s = new LinkedList<>();
+        for (String s1 : ele) {
+            if(s1.isEmpty()||s1.equals(".")||(s1.equals("..")&&s.size()==0))
+                continue;
+            else if(s1.equals(".."))
+                s.remove(s.size()-1);
+            else
+                s.add(s1);
+        }
+        StringBuilder rs = new StringBuilder();
+        for (String s1 : s)
+            rs.append("/").append(s1);
+        if(rs.length()==0)
+            return "/";
+        return rs.toString();
+    }
+
+    /**
+     *
+     * Given two words word1 and word2,
+     * find the minimum number of steps required to convert word1 to word2.
+     * (each operation is counted as 1 step.)
+     You have the following 3 operations permitted on a word:
+     a) Insert a character
+     b) Delete a character
+     c) Replace a character
+
+     * @param word1
+     * @param word2
+     * @return
+     */
+    @Index(72)
+    public int minDistance(String word1, String word2) {
+        int m = word1.length(),n = word2.length();
+        int[] cc = new int[m+1];
+        for (int i = 0; i <= m; i++) {
+            cc[i] = i;
+        }
+        int pre,tmp;
+        for (int i = 1; i <= n; i++) {
+            pre = cc[0];
+            cc[0] = i;
+            for (int j = 1; j <= m; j++) {
+                tmp = cc[j];
+                if(word1.charAt(j-1)==word2.charAt(i-1)){
+                    cc[j] = pre;
+                }
+                else{
+                    cc[j] =Math.min(cc[j]+1,Math.min(cc[j-1]+1,pre+1));
+                }
+                pre = tmp;
+            }
+        }
+        return cc[m];
+    }
+
+    @Index(73)
+    public void setZeroes(int[][] matrix) {
+        Set<Integer> rows = new HashSet<>();
+        Set<Integer> cols = new HashSet<>();
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if(matrix[i][j]==0){
+                    rows.add(i);
+                    cols.add(j);
+                }
+            }
+        }
+        for (Integer row : rows) {
+            for (int i = 0; i < matrix[0].length; i++) {
+                matrix[row][i]=0;
+            }
+        }
+        for (Integer col : cols) {
+            for (int i = 0; i < matrix.length; i++) {
+                matrix[i][col]=0;
+            }
+        }
+    }
+
+    @Index(74)
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if(matrix.length==0||matrix[0].length==0)
+            return false;
+        int rows = matrix.length,cols = matrix[0].length;
+        int rl = 0,rr = rows-1,cl = 0,cr = cols-1;
+        int rd,cd;
+        while (rl<=rr){
+            rd = (rl+rr)/2;
+            if(target<matrix[rd][0]){
+                rr = rd-1;
+            }
+            else if(target>matrix[rd][cols-1]){
+                rl = rd+1;
+            }
+            else{
+                while (cl<=cr){
+                    cd = (cl+cr)/2;
+                    if(target<matrix[rd][cd]){
+                        cr = cd - 1;
+                    }
+                    else if(target>matrix[rd][cd]){
+                        cl = cd + 1;
+                    }
+                    else
+                        return true;
+                }
+                break;
+            }
+        }
+        return false;
+    }
+
+    @Index(75)
+    public void sortColors(int[] nums) {
+        int l = 0 , r = nums.length-1,tmp,idx = 0;
+        while (idx<=r&&l<nums.length) {
+            tmp = nums[idx];
+            if (tmp == 2) {
+                nums[idx] = nums[r];
+                nums[r--] = tmp;
+            }
+            else if(tmp == 0){
+                nums[idx] = nums[l];
+                nums[l++] = tmp;
+            }
+            else
+                idx++;
+        }
+        for (int i = l; i <= r && i<nums.length; i++) {
+            nums[i] = 1;
+        }
+    }
+
+
+
 
 
 
@@ -1555,12 +1706,8 @@ public class Solution {
      * @param args
      */
     public static void main(String[] args) {
-//        Solution s =  new Solution();
-//        for (int i = 1; i <= 24; i++) {
-//            System.out.println(s.getPermutation(4,i));
-//        }
-//        System.out.println(s.addBinary("110010",
-//                "10111"));
-        System.out.println(Integer.toHexString(1<<31>>31));
+        Solution s =  new Solution();
+       s.sortColors(new int[]{0});
+
     }
 }
