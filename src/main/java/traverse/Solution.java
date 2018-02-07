@@ -1431,8 +1431,34 @@ public class Solution {
 
 
 
-
-
+    @Index(66)
+    public int[] plusOne(int[] digits) {
+        boolean ups = false;
+        for (int i = digits.length-1; i >= 0; i--) {
+            if(digits[i]+1<10) {
+                digits[i]++;
+                return digits;
+            }
+            else{
+                digits[i] = 0;
+            }
+        }
+        int[] nx = new int[digits.length+1];
+        nx[0] = 1;
+        System.arraycopy(digits,0,nx,1,digits.length);
+        return nx;
+    }
+    @Index(67)
+    public String addBinary(String a, String b) {
+        char[] ac = a.toCharArray();
+        char[] bc = b.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        int remain = 0;
+        for (int i = 1; i <= Math.min(a.length(),b.length()); i++) {
+            char c1 = ac[a.length()-i];
+            char c2 = bc[b.length()-i];
+        }
+    }
 
 
     @Index(205)
